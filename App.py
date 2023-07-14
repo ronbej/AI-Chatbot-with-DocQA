@@ -14,7 +14,7 @@ def upload():
         pass
     with open(filepath, 'w') as file:
         file.write(context)
-    #document_file.save(r'C:\Users\machi\OneDrive\Desktop\Chatbot\Contextfile.txt')
+    #document_file.save(r'')
     #document_file = request.files['file']
     return 'File uploaded successfully.'
 
