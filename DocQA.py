@@ -7,10 +7,10 @@ import cv2
 import pytesseract
 import numpy as np
 
-#pytesseract.pytesseract.tesseract_cmd = 'C:\Users\machi\AppData\Local\Programs\Tesseract-OCR'
+#pytesseract.pytesseract.tesseract_cmd = ''
 
 question_answering = pipeline("question-answering", model="csarron/bert-base-uncased-squad-v1")
-#contextfile = "Data Mining Review 3.docx"
+#contextfile = ""
 """def processfile(file):
     contextfile = file
     fname,fext = os.path.splitext(contextfile)
