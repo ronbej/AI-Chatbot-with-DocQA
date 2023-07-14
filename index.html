@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tabbed Page</title>
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Chatbot</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>-->
+  </head>
+  <body>
+    <div class="chat-container">
+        <h1>Assistant</h1>
+      <div class="tab-buttons">
+        <div class="tab-button active" onclick="openTab(event, 'tab1')">Chatbot</div>
+        <div class="tab-button" onclick="openTab(event, 'tab2')">Documents</div>
+      </div>
+      <iframe id="document-frame" src="path/to/your/document.pdf" style="display: none;"></iframe>
+      <div class="response-container">
+
+      </div>
+  
+      <div class="tab-content active" id="tab1">
+        <div class="input-container">
+            <input type="text" placeholder="Type your message..."  id="userInput" />
+            <button onclick="sendMessage()"><i class="fas fa-arrow-right"></i></button>
+          </div>
+      </div>
+  
+      <div class="tab-content" id="tab2">
+        <div class="input-container">
+            <input type="text" placeholder="Chat here"  id="userInput2" />
+            <div class="file-input-wrapper">
+              <label class="custom-button" for="file-input">
+                <button id="file-button"><i class="fas fa-upload"></i></button>
+              </label>
+              <input type="file" id="file-upload" onchange="displayFile(this)">
+              <!--<input type="file" id="file-upload" onchange="uploadFile();">-->
+            </div>
+            <button onclick="sendMessage2()"><i class="fas fa-arrow-right"></i></button>
+          </div>
+      </div>
+    </div>
+  
+  <script>
+      var input = document.querySelector("input[type='text']");
+      input.addEventListener("keydown", function(event) {
+        if (event.keyCode === 13) {
+          var userMessage = input.value;
+          if (userMessage.trim() !== "") {
+            addMessage(userMessage, "user-message");
+            input.value = "";
+            simulateBotResponse();
+          }
+        }
+      });
+
+      function sendMessage() {
+        var userInput = document.getElementById("userInput");
+        var userMessage = userInput.value;
+
+        if (userMessage.trim() !== "") {
+          addMessage(userMessage, "user-message");
+          sendRequest(userMessage,1)
+          userInput.value = "";
+        }
+      }
+
+      function sendMessage2() {
+        var userInput = document.getElementById("userInput2");
+        var userMessage = userInput.value;
+
+        if (userMessage.trim() !== "") {
+          addMessage(userMessage, "user-message");
+          sendRequest(userMessage,2)
+          userInput.value = "";
+        }
+      }
+
+      function addMessage(message, className) {
+        var messageContainer = document.createElement("div");
+        messageContainer.textContent = message;
+        messageContainer.classList.add("message", className);
+        document.querySelector(".response-container").appendChild(messageContainer);
+      }
+  
+      function simulateBotResponse(userResponse) {
+        setTimeout(function() {
+            addMessage(userResponse, "bot-message");
+        }, 500);
+      }
+
+      function openTab(evt, tabName) {
+        var i, tabContent, tabButton;
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+          tabContent[i].style.display = "none";
+        }
+  
+        tabButton = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tabButton.length; i++) {
+          tabButton[i].classList.remove("active");
+        }
+  
+        document.getElementById(tabName).style.display = "block";
+        if(tabName == "tab2"){
+          document.getElementById("document-frame").style.display = "block";
+        }
+        else{
+          document.getElementById("document-frame").style.display = "none";
+        }
+        evt.currentTarget.classList.add("active");
+      }
+
+      function displayFile(input) {
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+          var fileData = e.target.result;
+          var iframe = document.getElementById("document-frame");
+          iframe.src = fileData;
+        };
+
+        reader.readAsDataURL(file);
+      }
+
+      function uploadFile() {
+        var fileInput = document.getElementById('file-upload');
+        // var file = fileInput.files[0];
+
+        // var formData = new FormData();
+        // formData.append('file', file);
+
+        $.ajax({
+          url: '/upload',
+          type: 'GET',
+          data: fileInput,
+          processData: false,
+          contentType: true,
+          crossOrigin: true,
+          crossDomain: true,
+          success: function(response) {
+            console.log(response);
+          },
+          error: function() {
+            console.log('An error occurred while uploading the file.');
+          }
+        });
+      }
+
+      $(document).ready(function() {
+        $('#file-button').click(function(){
+          $('#file-upload').click();
+          uploadFile();
+        });
+      });
+
+      function sendRequest(message,param) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/ajax');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            simulateBotResponse(response.message);
+          }
+        };
+        var requestData = { msg: message, tab: param};
+        xhr.send(JSON.stringify(requestData));
+      }
+  </script>
+  </body>
+  </html>

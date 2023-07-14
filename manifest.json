@@ -1,0 +1,14 @@
+{  
+  "manifest_version": 2,  
+  "name": "Assistant",  
+  "description": "Extension for Chatbot Assistant with DocQA",  
+  "version": "1.0",  
+  "browser_action": {  
+   "default_icon": "logo.png",  
+   "default_popup": "test.html"  
+  },  
+  "permissions": [  
+   "activeTab",  
+   "storage"  
+  ]  
+ }  
