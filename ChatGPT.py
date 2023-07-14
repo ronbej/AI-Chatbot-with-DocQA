@@ -1,6 +1,6 @@
 import os
 import openai
-openai.api_key = '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'
+openai.api_key = ''
 messages = [ {"role": "system", "content": 
               "You are a intelligent assistant."} ]
 
